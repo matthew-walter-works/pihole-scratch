@@ -1,0 +1,105 @@
+# Pi-hole Docker Setup
+
+This Makefile provides an easy way to set up and manage a Pi-hole instance using Docker. Pi-hole acts as a network-wide ad blocker and DNS server.
+
+## Prerequisites
+
+Before you begin, ensure that you have the following installed on your machine:
+- Docker: Make sure Docker is installed and running on your system.
+- A Unix-based operating system (macOS, Linux, etc.)
+
+## Makefile Targets
+
+### `default`
+
+The default target that runs when you execute `make` without any arguments. This target will pull the latest Pi-hole image and run it in a container.
+
+```bash
+make
+```
+
+### `pull`
+
+This target pulls the latest Pi-hole Docker image from the official Pi-hole Docker repository.
+
+```bash
+make pull
+```
+
+### `run`
+
+This target pulls the Pi-hole Docker image (if not already done) and runs the container with the specified environment variables. It also maps the necessary ports, sets up DNS settings, and mounts volumes to persist data.
+
+```bash
+make run
+```
+
+After running this target, Pi-hole will be running and accessible via its web interface at `http://localhost:8080/admin`.
+
+### `stop`
+
+This target stops the running Pi-hole container.
+
+```bash
+make stop
+```
+
+### `start`
+
+This target starts the Pi-hole container if it already exists, or creates and runs it if the container is not found.
+
+```bash
+make start
+```
+
+### `restart`
+
+This target stops and then starts the Pi-hole container, effectively restarting it.
+
+```bash
+make restart
+```
+
+## Environment Variables
+
+The following environment variables are used in the Makefile and can be customized to suit your needs:
+
+- `PIHOLE_CONTAINER_NAME`: The name of the Pi-hole Docker container (default: `pihole`).
+- `PIHOLE_PASSWORD`: The password for the Pi-hole web interface (default: `changeme`).
+- `PIHOLE_WEB_PORT`: The port for the Pi-hole web interface (default: `8080`).
+- `PIHOLE_DNS`: The DNS server to be used by Pi-hole (default: `127.0.0.1`).
+
+You can set these environment variables in the Makefile or override them from the command line when running a specific target.
+
+Example to override `PIHOLE_PASSWORD` during run:
+
+```bash
+make run PIHOLE_PASSWORD=mysecretpassword
+```
+
+## Accessing Pi-hole
+
+Once the container is running, you can access the Pi-hole web interface at:
+
+```
+http://localhost:8080/admin
+```
+
+The login password will be the value set for `PIHOLE_PASSWORD`. By default, it is set to `changeme`.
+
+## Configuring macOS to Use Pi-hole
+
+To configure your macOS laptop to use Pi-hole as its DNS server:
+
+1. Open **System Settings**.
+2. Select **Network**, then choose your active connection (Wi-Fi or Ethernet).
+3. Click **Details** or **Advanced**.
+4. Go to the **DNS** tab.
+5. Remove any existing DNS servers and add `127.0.0.1` (or your Pi-hole container's IP address if using a custom setup).
+6. Click **OK** and then **Apply**.
+7. Restart your network connection to apply changes.
+
+## Troubleshooting
+
+- If you encounter any issues, try restarting the Pi-hole container with the `make restart` command.
+- Make sure that Docker is running and that your firewall or other network settings are not blocking the necessary ports (53, 80).
